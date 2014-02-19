@@ -1,0 +1,5 @@
+{
+    "ngModules": ["script1"],
+    "scripts": ["/script1.js", "/script2.js"],
+    "styles": []
+}

@@ -1,0 +1,61 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <!-- downlaoded from http://code.jquery.com/jquery-2.1.0.js -->
+    <script type="application/javascript" src="/jquery.js"></script>
+    <!-- downloaded from https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.js -->
+    <script type="application/javascript" src="/angular.js"></script>
+    <!-- downloaded from https://github.com/ded/script.js/blob/master/dist/script.js -->
+    <script type="application/javascript" src="/script.js"></script>
+</head>
+<body>
+
+<div ng-controller="Script1Ctrl">
+    {{message}}
+</div>
+
+<script type="application/javascript">
+    function loadStyles(styles){
+        for (var i = 0; i < styles.length; i++) {
+            var url = styles[i];
+            var link = document.createElement('link');
+            link.setAttribute('rel', 'stylesheet');
+            link.setAttribute('type', 'text/css');
+            link.setAttribute('href', url);
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    }
+    
+    function asyncBootstrap(scripts, ngModules) {
+        function loadNext() {
+            if (scripts.length == 0) {
+                // when all is done, execute bootstrap angular application
+                angular.bootstrap(document, ngModules);
+            }
+            else {
+                $script(scripts[0], function() {
+                    scripts = scripts.splice(1);
+
+                    loadNext();
+                });
+            }
+        }
+
+        loadNext();
+    }
+    
+    // Get CSS urls, then add the stylesheets
+    $.getJSON("/asyncBootstrap.json", function(data) {
+        if (data.styles) {
+            loadStyles(data.styles);
+        }
+        
+        asyncBootstrap(data.scripts, data.ngModules)
+    });
+</script>
+</body>
+</html>
